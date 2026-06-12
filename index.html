@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gartenparty Quiz PRO</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 30px 15px; 
+
+      background-image: url("bier.jpg");
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+
+      color: #2b1800;
+    }
+
+    button {
+      padding: 12px 20px;
+      margin: 8px;
+      font-size: 18px;
+    }
+
+    #quiz, #break, #end, #intro {
+      display: none;
+    }
+
+    /* Das animierte Timer-Bierglas im Spiel */
+    #timer-glass {
+      position: relative;
+      display: inline-block;
+      width: 100px;
+      height: 140px;
+      margin: 25px auto;
+      border-radius: 4px 4px 15px 15px; 
+      border: 4px solid #2b1800; 
+      background: linear-gradient(to bottom, #ffffff 0%, #ffffff 20%, #ffcc00 20%, #ffb300 100%);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    }
+
+    /* Der Henkel für das Timer-Bierglas */
+    #timer-glass::after {
+      content: "";
+      position: absolute;
+      right: -24px;
+      top: 30px;
+      width: 18px;
+      height: 65px;
+      border: 4px solid #2b1800; 
+      border-left: none;
+      border-radius: 0 15px 15px 0;
+    }
+
+    /* Die tickende Zahl mitten im Glas */
+    #timer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 45px;
+      font-weight: 900;
+      color: #2b1800;
+      text-shadow: 2px 2px 0px #ffffff, -2px -2px 0px #ffffff, 2px -2px 0px #ffffff, -2px 2px 0px #ffffff;
+      z-index: 2;
+    }
+
+    /* Der Erklärungstext rückt deutlich nach unten für das Hintergrundbild */
+    .welcome-text {
+      max-width: 700px; 
+      margin: 190px auto 30px auto; 
+      line-height: 1.6;
+      background-color: rgba(255, 255, 255, 0.85); 
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    /* Container für die Team-Auswahl-Kacheln auf der Startseite */
+    .team-selection-container {
+      max-width: 500px;
+      margin: 30px auto;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    }
+
+    .team-selection-container h4 {
+      font-size: 20px;
+      margin: 0 0 15px 0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #2b1800;
+    }
+
+    /* Die großen Team-Buttons */
+    .team-btn {
+      display: block;
+      width: 100%;
+      max-width: 350px;
+      margin: 12px auto !important;
+      padding: 15px 20px !important;
+      font-size: 22px !important;
+      font-weight: bold;
+      color: #2b1800;
+      background-color: #ffffff;
+      border: 3px solid #2b1800;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .team-btn:hover {
+      color: #ffffff;
+      background-color: #2b1800;
+      transform: scale(1.03);
+    }
+
+    /* FULLSCREEN INTRO (Roter Runden-Ankündigungs-Bildschirm) */
+    #intro {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #cc0000; 
+      color: white;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999; 
+    }
+
+    #introTitle {
+      font-size: 55px; 
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 30px;
+      text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.2); 
+      max-width: 90%;
+      line-height: 1.3;
+      border-bottom: 5px solid white; 
+      padding-bottom: 20px;
+      display: flex;
+      flex-direction: column; 
+      align-items: center;
+    }
+
+    #introTitle .or-divider {
+      font-size: 35px;
+      font-weight: normal;
+      font-style: italic;
+      margin: 10px 0;
+      opacity: 0.9;
+    }
+
+    #countdown {
+      font-size: 140px; 
+      font-weight: bold;
+      text-shadow: 4px 4px 0px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Optisches Kästchen für die Rubriken-Anzeige im Spiel */
+    .category-badge {
+      display: inline-block;
+      background-color: #2b1800; 
+      color: #ffffff;            
+      padding: 8px 24px;
+      border-radius: 25px;       
+      font-size: 18px;
+      font-weight: bold;
+      text-transform: uppercase; 
+      letter-spacing: 1px;       
+      margin-bottom: 40px;       
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2); 
+    }
+
+    /* Die Frage als edle, hervorgehobene Text-Karte */
+    .question-card {
+      max-width: 850px;
+      margin: 0 auto;
+      background-color: rgba(255, 255, 255, 0.92); 
+      padding: 30px 40px;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); 
+      border: 1px solid rgba(43, 24, 0, 0.1);
+    }
+
+    #question {
+      font-size: 32px; 
+      font-weight: bold;
+      line-height: 1.4;
+      margin: 0;
+      color: #1a0f00; 
+    }
+
+    /* Abstand für die Antwortbuttons im Spiel */
+    #answers {
+      margin-top: 60px; 
+    }
+
+    #answers button {
+      padding: 15px 30px;
+      font-size: 22px;
+      margin: 15px;
+      cursor: pointer;
+      background-color: #ffffff;
+      border: 2px solid #2b1800;
+      border-radius: 8px;
+      font-weight: bold;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    #answers button:hover {
+      background-color: #2b1800;
+      color: #ffffff;
+      transform: translateY(-2px); 
+    }
+
+    /* Das CSS-Bierglas für den "Spiel beenden"-Button */
+    .beer-mug-button {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+      min-width: 280px;
+      max-width: 360px;
+      height: 160px; 
+      margin: 40px auto;
+      padding: 50px 20px 15px 20px !important; 
+      border-radius: 4px 4px 25px 25px; 
+      border: 4px solid #f4f4f4;
+      background: linear-gradient(to bottom, #ffffff 0%, #ffffff 25%, #ffcc00 25%, #ffb300 100%);
+      color: #2b1800 !important;
+      font-size: 16px !important; 
+      font-weight: bold !important;
+      line-height: 1.4;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+      transition: all 0.2s ease;
+    }
+
+    .beer-mug-button::after {
+      content: "";
+      position: absolute;
+      right: -30px;
+      top: 40px;
+      width: 25px;
+      height: 80px;
+      border: 4px solid #f4f4f4;
+      border-left: none;
+      border-radius: 0 20px 20px 0;
+      background-color: transparent;
+    }
+
+    .beer-mug-button:hover {
+      transform: scale(1.05) rotate(-2deg); 
+      box-shadow: 0 12px 20px rgba(0,0,0,0.4);
+    }
+
+    /* Sieger-Karte für das Spielende */
+    .podium-card {
+      max-width: 600px;
+      margin: 80px auto;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+      border: 3px solid #ffcc00; 
+    }
+
+    .podium-card h2 {
+      font-size: 42px;
+      margin-bottom: 10px;
+      color: #2b1800;
+    }
+
+    .podium-card .team-name-final {
+      font-size: 36px;
+      font-weight: 900;
+      color: #cc0000;
+      text-transform: uppercase;
+      margin-bottom: 30px;
+      letter-spacing: 1px;
+    }
+
+    /* Goldener Kreis für die Punkte */
+    .score-circle {
+      width: 160px;
+      height: 160px;
+      background: radial-gradient(circle, #ffe066 0%, #ffcc00 100%);
+      border-radius: 50%;
+      margin: 0 auto 30px auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 8px 20px rgba(255, 204, 0, 0.4), inset 0 0 15px rgba(255,255,255,0.6);
+      border: 5px solid #ffffff;
+    }
+
+    .score-circle .points-num {
+      font-size: 60px;
+      font-weight: 900;
+      color: #2b1800;
+      line-height: 1;
+    }
+
+    .score-circle .points-label {
+      font-size: 16px;
+      font-weight: bold;
+      text-transform: uppercase;
+      color: #593200;
+      margin-top: 5px;
+    }
+
+    .party-emoji-line {
+      font-size: 30px;
+      letter-spacing: 10px;
+      animation: celebrate 1.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes celebrate {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.1); }
+    }
+
+    /* MOBILE OPTIMIERUNG */
+    @media (max-width: 768px) {
+      body { padding: 15px 10px; }
+      h1 { font-size: 26px; }
+      .welcome-text { margin: 60px auto 20px auto; padding: 15px; font-size: 15px; }
+      .team-selection-container { padding: 15px; margin: 20px 5px; }
+      .team-btn { font-size: 18px !important; padding: 12px 15px !important; margin: 8px auto !important; }
+      .beer-mug-button { font-size: 14px !important; max-width: 300px; height: 150px; padding: 45px 15px 10px 15px !important; }
+      #introTitle { font-size: 34px; border-bottom-width: 3px; }
+      #introTitle .or-divider { font-size: 24px; margin: 5px 0; }
+      #countdown { font-size: 90px; }
+      .question-card { padding: 20px 15px; margin: 0 5px; }
+      #question { font-size: 22px; }
+      #timer-glass { width: 85px; height: 120px; margin: 15px auto; }
+      #timer { font-size: 36px; }
+      #answers { margin-top: 30px; }
+      #answers button { display: block; width: 100%; max-width: 280px; margin: 10px auto; padding: 12px 20px; font-size: 18px; }
+      .podium-card { padding: 20px; margin: 30px auto; }
+      .podium-card h2 { font-size: 28px; }
+      .podium-card .team-name-final { font-size: 24px; }
+      .score-circle { width: 120px; height: 120px; }
+      .score-circle .points-num { font-size: 44px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="start-screen">
+  <h1>🍺 Gartenparty Quiz 2026</h1>
+  <div class="welcome-text">
+    <h3>Willkommen zum Gartenparty-Quiz 🍺</h3>
+    <p>
+      Freut euch auf 5 verrückte Rubriken mit insgesamt 50 Fragen.
+      Für jede Frage habt ihr 10 Sekunden Zeit und es gibt immer nur zwei Antwortmöglichkeiten.
+      Jede richtige Antwort bringt eurem Team einen Punkt.
+      Zur nächsten Frage geht es sofort weiter – zurückspringen ist nicht möglich.
+      Also: Nicht zu lange überlegen, sondern Bauchgefühl einschalten und viel Spaß!
+    </p>
+  </div>
+  <div class="team-selection-container">
+    <h4>Wählt euer Team aus, um zu starten:</h4>
+    <button class="team-btn" onclick="selectTeamAndStart('Hopfen')">🌾 Team Hopfen</button>
+    <button class="team-btn" onclick="selectTeamAndStart('Malz')">🪵 Team Malz</button>
+    <button class="team-btn" onclick="selectTeamAndStart('Bier')">🍺 Team Bier</button>
+    <button class="team-btn" onclick="selectTeamAndStart('Durst')">🔥 Team Durst</button>
+  </div>
+</div>
+
+<div id="intro">
+  <div id="introTitle"></div>
+  <div id="countdown"></div>
+</div>
+
+<div id="quiz">
+  <div><span id="roundTitle" class="category-badge"></span></div>
+  <div class="question-card"><h2 id="question"></h2></div>
+  <div id="timer-glass"><div id="timer">10</div></div>
+  <div id="answers"></div>
+  <h3 id="score"></h3>
+</div>
+
+<div id="break">
+  <h2 id="breakText"></h2>
+  <div style="margin-top: 50px;"><button id="nextBtn" onclick="nextRound()">➡ Weiter</button></div>
+</div>
+
+<div id="end"></div>
+
+<script>
+const supabaseUrl = "https://rnswwuqougrthkhybqrx.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJuc3d3dXFvdWdydGhraHlicXJ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExNzgwOTMsImV4cCI6MjA5Njc1NDA5M30.WE_SEXytgEr6Z5J1S7ZlUJtnD5lSLSRuf7kfpRyemfM";
+
+const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+const rounds = [
+  { id: 1, part1: "Samstag", part2: "nicht Samstag" },
+  { id: 2, part1: "länger als 2 Stunden", part2: "nicht länger als 2 Stunden" },
+  { id: 3, part1: "sächsisch", part2: "nicht sächsisch" },
+  { id: 4, part1: "aktuell", part2: "nicht aktuell" },
+  { id: 5, part1: "Maus", part2: "nicht Maus" }
+];
+
+let allQuestions = [];
+let currentQuestions = [];
+let roundIndex = 0;
+let questionIndex = 0;
+let score = 0;
+let team = "";
+let timer;
+let timeLeft = 10;
+
+/* =========================
+   START GAME ÜBER TEAM-KLICK
+========================= */
+window.selectTeamAndStart = async function (selectedTeam) {
+  team = selectedTeam;
+
+  const { data, error } = await supabaseClient.from("questions").select("*");
+  if (error) { alert("Fehler beim Laden der Fragen"); return; }
+
+  allQuestions = data;
+  roundIndex = 0;
+  score = 0;
+
+  document.getElementById("start-screen").style.display = "none";
+  showIntro();
+};
+
+/* =========================
+   SHOW INTRO (5s COUNTDOWN)
+========================= */
+function showIntro() {
+  document.getElementById("intro").style.display = "flex";
+  const round = rounds[roundIndex];
+
+  document.getElementById("introTitle").innerHTML = `
+    <div>${round.part1}</div>
+    <div class="or-divider">oder</div>
+    <div>${round.part2}</div>
+  `;
+
+  let count = 5;
+  document.getElementById("countdown").innerText = count;
+
+  const interval = setInterval(() => {
+    count--;
+    document.getElementById("countdown").innerText = count;
+    if (count <= 0) {
+      clearInterval(interval);
+      document.getElementById("intro").style.display = "none";
+      startRound();
+    }
+  }, 1000);
+}
+
+/* =========================
+   START ROUND
+========================= */
+function startRound() {
+  document.getElementById("intro").style.display = "none";
+  document.getElementById("break").style.display = "none";
+  document.getElementById("quiz").style.display = "block";
+
+  const round = rounds[roundIndex];
+  currentQuestions = allQuestions.filter(q => q.round_id === round.id);
+  questionIndex = 0;
+  loadQuestion();
+}
+
+/* =========================
+   QUESTION
+========================= */
+function loadQuestion() {
+  if (questionIndex >= currentQuestions.length) {
+    endRound();
+    return;
+  }
+
+  const q = currentQuestions[questionIndex];
+  document.getElementById("roundTitle").innerText =
+    "Rubrik: " + rounds[roundIndex].part1 + " oder " + rounds[roundIndex].part2;
+  document.getElementById("question").innerText = q.question;
+
+  renderAnswers(rounds[roundIndex].id);
+  startTimer();
+}
+
+/* =========================
+   ANSWERS
+========================= */
+function renderAnswers(roundId) {
+  let options = [];
+  switch(roundId) {
+    case 1: options = ["Samstag", "nicht Samstag"]; break;
+    case 2: options = ["länger als 2 Stunden", "nicht länger als 2 Stunden"]; break;
+    case 3: options = ["sächsisch", "nicht sächsisch"]; break;
+    case 4: options = ["aktuell", "nicht aktuell"]; break;
+    case 5: options = ["Maus", "nicht Maus"]; break;
+  }
+
+  let html = "";
+  options.forEach(opt => {
+    html += `<button onclick="answer('${opt}')">${opt}</button>`;
+  });
+  document.getElementById("answers").innerHTML = html;
+}
+
+/* =========================
+   TIMER
+========================= */
+function startTimer() {
+  clearInterval(timer);
+  timeLeft = 10;
+  document.getElementById("timer").innerText = timeLeft;
+  
+  document.getElementById("timer-glass").style.background = 
+    "linear-gradient(to bottom, #ffffff 0%, #ffffff 20%, #ffcc00 20%, #ffb300 100%)";
+
+  timer = setInterval(() => {
+    timeLeft--;
+    document.getElementById("timer").innerText = timeLeft;
+
+    let beerLevel = 20 + ((10 - timeLeft) * 8); 
+    document.getElementById("timer-glass").style.background = 
+      `linear-gradient(to bottom, #ffffff 0%, #ffffff 20%, #ffcc00 ${beerLevel}%, #ffb300 100%)`;
+
+    if (timeLeft <= 0) {
+      clearInterval(timer); 
+      nextQuestion();
+    }
+  }, 1000);
+}
+
+/* =========================
+   ANSWER
+========================= */
+window.answer = function (val) {
+  clearInterval(timer);
+  const q = currentQuestions[questionIndex];
+  if (val === q.correct_answer) { score++; }
+  nextQuestion();
+};
+
+function nextQuestion() {
+  questionIndex++;
+  loadQuestion();
+}
+
+/* =========================
+   ROUND END
+========================= */
+function endRound() {
+  document.getElementById("quiz").style.display = "none";
+  document.getElementById("break").style.display = "block";
+
+  const next = rounds[roundIndex + 1];
+  const btn = document.getElementById("nextBtn");
+
+  if (next) {
+    btn.className = ""; 
+    btn.innerText = "➡ Weiter zur Rubrik " + next.part1 + " oder " + next.part2;
+  } else {
+    btn.className = "beer-mug-button";
+    btn.innerHTML = "Spiel beenden &<br>Punkte speichern<br><small style='font-size:12px; opacity:0.8; font-weight:normal;'>Jetzt hast du dir ein Bier verdient!</small>";
+  }
+
+  document.getElementById("breakText").innerText = "Runde beendet! Score: " + score;
+}
+
+/* =========================
+   NEXT ROUND
+========================= */
+function nextRound() {
+  roundIndex++;
+  if (roundIndex >= rounds.length) { finishGame(); return; }
+  showIntro();
+}
+
+/* =========================
+   FINISH
+========================= */
+async function finishGame() {
+  document.getElementById("break").style.display = "none";
+  document.getElementById("end").style.display = "block";
+
+  document.getElementById("end").innerHTML = `
+    <div class="podium-card">
+      <h2>🏆 ENDERGEBNIS 🏆</h2>
+      <div class="team-name-final">Team: ${team}</div>
+      <div class="score-circle">
+        <span class="points-num">${score}</span>
+        <span class="points-label">Punkte</span>
+      </div>
+      <div class="party-emoji-line">🍻🎉🥳🔥🍻</div>
+    </div>
+  `;
+
+  await supabaseClient.from("results").insert([{ team, score }]);
+}
+</script>
+</body>
+</html>
