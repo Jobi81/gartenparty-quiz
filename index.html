@@ -11,7 +11,7 @@
     body {
       font-family: Arial, sans-serif;
       text-align: center;
-      padding: 30px 15px; /* Seitliches Padding am Handy leicht reduziert */
+      padding: 30px 15px; 
 
       background-image: url("bier.jpg");
       background-size: cover;
@@ -47,6 +47,48 @@
       border-radius: 10px;
     }
 
+    /* Container für die Team-Auswahl-Kacheln auf der Startseite */
+    .team-selection-container {
+      max-width: 500px;
+      margin: 30px auto;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    }
+
+    .team-selection-container h4 {
+      font-size: 20px;
+      margin: 0 0 15px 0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #2b1800;
+    }
+
+    /* Die großen Team-Buttons */
+    .team-btn {
+      display: block;
+      width: 100%;
+      max-width: 350px;
+      margin: 12px auto !important;
+      padding: 15px 20px !important;
+      font-size: 22px !important;
+      font-weight: bold;
+      color: #2b1800;
+      background-color: #ffffff;
+      border: 3px solid #2b1800;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .team-btn:hover {
+      color: #ffffff;
+      background-color: #2b1800;
+      transform: scale(1.03);
+    }
+
     /* FULLSCREEN INTRO (Roter Runden-Ankündigungs-Bildschirm) */
     #intro {
       position: fixed;
@@ -63,7 +105,6 @@
       z-index: 9999; 
     }
 
-    /* Intro-Titel: Auf Zeilenumbruch vorbereitet */
     #introTitle {
       font-size: 55px; 
       font-weight: 900;
@@ -80,7 +121,6 @@
       align-items: center;
     }
 
-    /* Stylt das Wort "oder" im Intro extra schick */
     #introTitle .or-divider {
       font-size: 35px;
       font-weight: normal;
@@ -121,7 +161,6 @@
       border: 1px solid rgba(43, 24, 0, 0.1);
     }
 
-    /* Der Text innerhalb der Fragen-Karte */
     #question {
       font-size: 32px; 
       font-weight: bold;
@@ -158,18 +197,19 @@
     .beer-mug-button {
       position: relative;
       display: inline-block;
-      min-width: 220px;
-      max-width: 320px;
-      height: 140px;
+      width: 100%;
+      min-width: 280px;
+      max-width: 360px;
+      height: 160px; /* Leicht erhöht für den zusätzlichen Text */
       margin: 40px auto;
-      padding: 45px 25px 15px 25px !important; 
+      padding: 50px 20px 15px 20px !important; 
       border-radius: 4px 4px 25px 25px; 
       border: 4px solid #f4f4f4;
       background: linear-gradient(to bottom, #ffffff 0%, #ffffff 25%, #ffcc00 25%, #ffb300 100%);
       color: #2b1800 !important;
-      font-size: 20px !important;
+      font-size: 16px !important; /* Minimal kleiner, damit die 3 Zeilen perfekt wirken */
       font-weight: bold !important;
-      line-height: 1.2;
+      line-height: 1.4;
       text-transform: uppercase;
       cursor: pointer;
       box-shadow: 0 8px 16px rgba(0,0,0,0.3);
@@ -180,9 +220,9 @@
       content: "";
       position: absolute;
       right: -30px;
-      top: 35px;
+      top: 40px;
       width: 25px;
-      height: 70px;
+      height: 80px;
       border: 4px solid #f4f4f4;
       border-left: none;
       border-radius: 0 20px 20px 0;
@@ -261,26 +301,40 @@
       100% { transform: scale(1.1); }
     }
 
-    /* ==========================================================================
-       NEU: MOBILE OPTIMIERUNG (Greift automatisch bei Bildschirmen unter 768px Breite)
-       ========================================================================== */
+    /* MOBILE OPTIMIERUNG */
     @media (max-width: 768px) {
       body {
         padding: 15px 10px;
       }
       
       h1 {
-        font-size: 26px; /* Hauptüberschrift auf dem Handy etwas kleiner */
+        font-size: 26px; 
       }
 
-      /* Verringert den Riesenabstand oben auf dem Handy, damit man nicht scrollen muss */
       .welcome-text {
         margin: 60px auto 20px auto; 
         padding: 15px;
         font-size: 15px;
       }
 
-      /* Macht die rote Rundenankündigung handlicher */
+      .team-selection-container {
+        padding: 15px;
+        margin: 20px 5px;
+      }
+      .team-btn {
+        font-size: 18px !important;
+        padding: 12px 15px !important;
+        margin: 8px auto !important;
+      }
+
+      /* Verhindert, dass das Glas auf sehr kleinen Bildschirmen zu wuchtig ist */
+      .beer-mug-button {
+        font-size: 14px !important;
+        max-width: 300px;
+        height: 150px;
+        padding: 45px 15px 10px 15px !important;
+      }
+
       #introTitle {
         font-size: 34px; 
         border-bottom-width: 3px;
@@ -293,21 +347,19 @@
         font-size: 90px;
       }
 
-      /* Passt die Fragen-Karte an das Handydisplay an */
       .question-card {
         padding: 20px 15px;
         margin: 0 5px;
       }
       #question {
-        font-size: 22px; /* Perfekt lesbar auf dem Handy, ohne zu stauchen */
+        font-size: 22px; 
       }
 
-      /* Rückt die Antwortbuttons auf dem Handy ein Stück höher */
       #answers {
         margin-top: 40px; 
       }
       #answers button {
-        display: block; /* Platziert die zwei Buttons auf dem Handy sauber untereinander */
+        display: block; 
         width: 100%;
         max-width: 280px;
         margin: 10px auto;
@@ -315,7 +367,6 @@
         font-size: 18px;
       }
 
-      /* Finale Sieger-Karte kompakter machen */
       .podium-card {
         padding: 20px;
         margin: 30px auto;
@@ -330,6 +381,7 @@
 
 <body>
 
+<!-- START-SCREEN -->
 <div id="start-screen">
   <h1>🍺 Gartenparty Quiz 2026</h1>
 
@@ -344,21 +396,22 @@
     </p>
   </div>
 
-  <select id="team" style="padding: 10px; font-size: 16px;">
-    <option>Hopfen</option>
-    <option>Malz</option>
-    <option>Bier</option>
-    <option>Durst</option>
-  </select>
-
-  <button onclick="startGame()">Start</button>
+  <div class="team-selection-container">
+    <h4>Wählt euer Team aus, um zu starten:</h4>
+    <button class="team-btn" onclick="selectTeamAndStart('Hopfen')">🌾 Team Hopfen</button>
+    <button class="team-btn" onclick="selectTeamAndStart('Malz')">🪵 Team Malz</button>
+    <button class="team-btn" onclick="selectTeamAndStart('Bier')">🍺 Team Bier</button>
+    <button class="team-btn" onclick="selectTeamAndStart('Durst')">🔥 Team Durst</button>
+  </div>
 </div>
 
+<!-- INTRO -->
 <div id="intro">
   <div id="introTitle"></div>
   <div id="countdown"></div>
 </div>
 
+<!-- QUIZ -->
 <div id="quiz">
   <div>
     <span id="roundTitle" class="category-badge"></span>
@@ -375,6 +428,7 @@
   <h3 id="score"></h3>
 </div>
 
+<!-- BREAK -->
 <div id="break">
   <h2 id="breakText"></h2>
   <div style="margin-top: 50px;">
@@ -382,8 +436,10 @@
   </div>
 </div>
 
+<!-- END -->
 <div id="end">
-  </div>
+  <!-- Wird im JavaScript dynamisch befüllt -->
+</div>
 
 <script>
 
@@ -392,7 +448,7 @@ const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 
 const supabaseClient = window.supabase.createClient(
   supabaseUrl,
-  supabaseKey
+  supabaseUrl === "https://rnswwuqougrthkhybqrx.supabase.co" ? supabaseKey : ""
 );
 
 const rounds = [
@@ -413,12 +469,11 @@ let timer;
 let timeLeft = 10;
 
 /* =========================
-   START GAME
+   START GAME ÜBER TEAM-KLICK
 ========================= */
-
-window.startGame = async function () {
-
-  team = document.getElementById("team").value;
+window.selectTeamAndStart = async function (selectedTeam) {
+  
+  team = selectedTeam;
 
   const { data, error } = await supabaseClient
     .from("questions")
@@ -616,8 +671,9 @@ function endRound() {
     btn.className = ""; 
     btn.innerText = "➡ Weiter zur Rubrik " + next.part1 + " oder " + next.part2;
   } else {
+    // HIER GEÄNDERT: Neuer dreizeiliger Text für das Bierglas, um die Speicherung glasklar zu machen
     btn.className = "beer-mug-button";
-    btn.innerText = "Spiel beenden\nund Bier trinken";
+    btn.innerHTML = "Spiel beenden &<br>Punkte speichern<br><small style='font-size:12px; opacity:0.8; font-weight:normal;'>Jetzt hast du dir ein Bier verdient!</small>";
   }
 
   document.getElementById("breakText").innerText =
