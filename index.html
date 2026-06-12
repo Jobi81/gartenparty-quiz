@@ -31,10 +31,53 @@
       display: none;
     }
 
+    /* NEU: Das animierte Timer-Bierglas im Spiel */
+    #timer-glass {
+      position: relative;
+      display: inline-block;
+      width: 100px;
+      height: 140px;
+      margin: 25px auto;
+      
+      /* Glas-Form: Oben offen, unten abgerundet */
+      border-radius: 4px 4px 15px 15px; 
+      border: 4px solid #f4f4f4;
+      
+      /* Start-Füllstand (wird im JS dynamisch überschrieben) */
+      background: linear-gradient(to bottom, #ffffff 0%, #ffffff 20%, #ffcc00 20%, #ffb300 100%);
+      
+      box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    }
+
+    /* Der Henkel für das Timer-Bierglas */
+    #timer-glass::after {
+      content: "";
+      position: absolute;
+      right: -24px;
+      top: 30px;
+      width: 18px;
+      height: 65px;
+      border: 4px solid #f4f4f4;
+      border-left: none;
+      border-radius: 0 15px 15px 0;
+    }
+
+    /* Die tickende Zahl mitten im Glas */
     #timer {
-      font-size: 40px;
-      font-weight: bold;
-      margin-top: 30px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 45px;
+      font-weight: 900;
+      color: #2b1800;
+      /* Ein feiner weißer Schatten, damit die Zahl auch auf dunklem Grund lesbar bleibt */
+      text-shadow: 2px 2px 0px #ffffff, -2px -2px 0px #ffffff, 2px -2px 0px #ffffff, -2px 2px 0px #ffffff;
+      z-index: 2;
     }
 
     /* Der Erklärungstext rückt deutlich nach unten für das Hintergrundbild */
@@ -171,7 +214,7 @@
 
     /* Abstand für die Antwortbuttons im Spiel (tiefer eingeblendet) */
     #answers {
-      margin-top: 100px; 
+      margin-top: 60px; /* Leicht reduziert, damit das Timer-Glas gut dazwischenpasst */
     }
 
     #answers button {
@@ -200,14 +243,14 @@
       width: 100%;
       min-width: 280px;
       max-width: 360px;
-      height: 160px; /* Leicht erhöht für den zusätzlichen Text */
+      height: 160px; 
       margin: 40px auto;
       padding: 50px 20px 15px 20px !important; 
       border-radius: 4px 4px 25px 25px; 
       border: 4px solid #f4f4f4;
       background: linear-gradient(to bottom, #ffffff 0%, #ffffff 25%, #ffcc00 25%, #ffb300 100%);
       color: #2b1800 !important;
-      font-size: 16px !important; /* Minimal kleiner, damit die 3 Zeilen perfekt wirken */
+      font-size: 16px !important; 
       font-weight: bold !important;
       line-height: 1.4;
       text-transform: uppercase;
@@ -327,7 +370,6 @@
         margin: 8px auto !important;
       }
 
-      /* Verhindert, dass das Glas auf sehr kleinen Bildschirmen zu wuchtig ist */
       .beer-mug-button {
         font-size: 14px !important;
         max-width: 300px;
@@ -355,8 +397,18 @@
         font-size: 22px; 
       }
 
+      /* Skaliert das Timer-Bierglas auf dem Handy minimal runter */
+      #timer-glass {
+        width: 85px;
+        height: 120px;
+        margin: 15px auto;
+      }
+      #timer {
+        font-size: 36px;
+      }
+
       #answers {
-        margin-top: 40px; 
+        margin-top: 30px; 
       }
       #answers button {
         display: block; 
@@ -381,7 +433,6 @@
 
 <body>
 
-<!-- START-SCREEN -->
 <div id="start-screen">
   <h1>🍺 Gartenparty Quiz 2026</h1>
 
@@ -405,13 +456,11 @@
   </div>
 </div>
 
-<!-- INTRO -->
 <div id="intro">
   <div id="introTitle"></div>
   <div id="countdown"></div>
 </div>
 
-<!-- QUIZ -->
 <div id="quiz">
   <div>
     <span id="roundTitle" class="category-badge"></span>
@@ -421,14 +470,15 @@
     <h2 id="question"></h2>
   </div>
 
-  <div id="timer">10</div>
+  <div id="timer-glass">
+    <div id="timer">10</div>
+  </div>
 
   <div id="answers"></div>
 
   <h3 id="score"></h3>
 </div>
 
-<!-- BREAK -->
 <div id="break">
   <h2 id="breakText"></h2>
   <div style="margin-top: 50px;">
@@ -436,10 +486,8 @@
   </div>
 </div>
 
-<!-- END -->
 <div id="end">
-  <!-- Wird im JavaScript dynamisch befüllt -->
-</div>
+  </div>
 
 <script>
 
@@ -448,7 +496,7 @@ const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 
 const supabaseClient = window.supabase.createClient(
   supabaseUrl,
-  supabaseUrl === "https://rnswwuqougrthkhybqrx.supabase.co" ? supabaseKey : ""
+  supabaseKey
 );
 
 const rounds = [
@@ -606,7 +654,7 @@ function renderAnswers(roundId) {
 }
 
 /* =========================
-   TIMER
+   TIMER (Mit Bierglas-Leerungs-Logik)
 ========================= */
 
 function startTimer() {
@@ -616,11 +664,22 @@ function startTimer() {
   timeLeft = 10;
 
   document.getElementById("timer").innerText = timeLeft;
+  
+  // Setzt das Glas zu Beginn jeder Frage wieder voll auf Anschlag (20% Schaumgrenze)
+  document.getElementById("timer-glass").style.background = 
+    "linear-gradient(to bottom, #ffffff 0%, #ffffff 20%, #ffcc00 20%, #ffb300 100%)";
 
   timer = setInterval(() => {
 
     timeLeft--;
     document.getElementById("timer").innerText = timeLeft;
+
+    // NEU: Berechnet den Füllstand dynamisch.
+    // Da wir 20% Schaumkrone oben festbehalten, wandert der "Bierspiegel" von 20% (voll) bis 100% (leer) nach unten.
+    let beerLevel = 20 + ((10 - timeLeft) * 8); 
+    
+    document.getElementById("timer-glass").style.background = 
+      `linear-gradient(to bottom, #ffffff 0%, #ffffff 20%, #ffcc00 ${beerLevel}%, #ffb300 100%)`;
 
     if (timeLeft <= 0) {
       nextQuestion();
@@ -650,6 +709,10 @@ window.answer = function (val) {
    NEXT QUESTION
 ========================= */
 
+function test() {
+  console.log("test");
+}
+
 function nextQuestion() {
   questionIndex++;
   loadQuestion();
@@ -671,7 +734,6 @@ function endRound() {
     btn.className = ""; 
     btn.innerText = "➡ Weiter zur Rubrik " + next.part1 + " oder " + next.part2;
   } else {
-    // HIER GEÄNDERT: Neuer dreizeiliger Text für das Bierglas, um die Speicherung glasklar zu machen
     btn.className = "beer-mug-button";
     btn.innerHTML = "Spiel beenden &<br>Punkte speichern<br><small style='font-size:12px; opacity:0.8; font-weight:normal;'>Jetzt hast du dir ein Bier verdient!</small>";
   }
