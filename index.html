@@ -31,11 +31,11 @@
       display: none;
     }
 
-    /* NEU: Einlass-Bildschirm (Türsteher-Frage) */
+    /* Einlass-Bildschirm (Türsteher-Frage) */
     #gatekeeper-screen {
-      display: block; /* Wird als einziges zuerst angezeigt */
+      display: block; 
       max-width: 600px;
-      margin: 100px auto 30px auto;
+      margin: 80px auto 30px auto;
       background: rgba(255, 255, 255, 0.92);
       padding: 35px;
       border-radius: 15px;
@@ -47,6 +47,33 @@
       font-size: 28px;
       margin-bottom: 25px;
       line-height: 1.4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    /* NEU: Animation für das Zuprosten der Bierkrüge */
+    .cheers-mug {
+      width: 45px;
+      height: 45px;
+    }
+    .mug-left {
+      animation: prostdich-links 3s ease-in-out infinite;
+    }
+    .mug-right {
+      animation: prostdich-rechts 3s ease-in-out infinite;
+    }
+
+    @keyframes prostdich-links {
+      0%, 100% { transform: rotate(0deg) translateY(0); }
+      40% { transform: rotate(15deg) translate(5px, -5px); }
+      50% { transform: rotate(15deg) translate(5px, -5px); }
+    }
+    @keyframes prostdich-rechts {
+      0%, 100% { transform: rotate(0deg) translateY(0); }
+      40% { transform: rotate(-15deg) translate(-5px, -5px); }
+      50% { transform: rotate(-15deg) translate(-5px, -5px); }
     }
 
     .guess-input-container {
@@ -85,6 +112,23 @@
       background-color: #ffcc00;
       color: #2b1800;
       transform: scale(1.05);
+    }
+
+    /* NEU: Das fette, leuchtende 3D-Party-Schild als Überschrift */
+    .party-headline {
+      font-size: 46px;
+      font-weight: 900;
+      text-transform: uppercase;
+      margin: 140px auto 10px auto;
+      letter-spacing: 2px;
+      
+      /* Schicker Gold-Bier-Farbverlauf */
+      background: linear-gradient(to bottom, #ffe066 0%, #ff9900 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      
+      /* Mächtiger 3D-Effekt mit Schattenwurf */
+      filter: drop-shadow(3px 3px 0px #2b1800) drop-shadow(5px 5px 10px rgba(0,0,0,0.6));
     }
 
     /* Das animierte Timer-Bierglas im Spiel */
@@ -133,7 +177,7 @@
     /* Der Erklärungstext rückt deutlich nach unten für das Hintergrundbild */
     .welcome-text {
       max-width: 700px; 
-      margin: 190px auto 30px auto; 
+      margin: 20px auto 30px auto; /* Abstand oben verringert, da Headline jetzt eigenen Margin hat */
       line-height: 1.6;
       background-color: rgba(255, 255, 255, 0.85); 
       padding: 20px;
@@ -182,7 +226,7 @@
       transform: scale(1.03);
     }
 
-    /* FULLSCREEN INTRO (Roter Runden-Ankündigungs-Bildschirm) */
+    /* FULLSCREEN INTRO */
     #intro {
       position: fixed;
       top: 0;
@@ -397,10 +441,10 @@
     /* MOBILE OPTIMIERUNG */
     @media (max-width: 768px) {
       body { padding: 15px 10px; }
-      h1 { font-size: 26px; }
+      .party-headline { font-size: 28px; margin: 50px auto 10px auto; } /* Verkleinerte Mobile-Überschrift */
       #gatekeeper-screen { margin: 40px auto 15px auto; padding: 20px; }
       #gatekeeper-screen h2 { font-size: 22px; }
-      .welcome-text { margin: 60px auto 20px auto; padding: 15px; font-size: 15px; }
+      .welcome-text { margin: 20px auto 20px auto; padding: 15px; font-size: 15px; }
       .team-selection-container { padding: 15px; margin: 20px 5px; }
       .team-btn { font-size: 18px !important; padding: 12px 15px !important; margin: 8px auto !important; }
       .beer-mug-button { font-size: 14px !important; max-width: 300px; height: 150px; padding: 45px 15px 10px 15px !important; }
@@ -425,7 +469,23 @@
 <body>
 
 <div id="gatekeeper-screen">
-  <h2>🍺 Einlasskontrolle 🍺<br><br><span style="font-weight:normal; font-size: 20px;">Wieviel Prozent Alkoholgehalt hat deiner Einschätzung nach das stärkste Bier der Welt?</span></h2>
+  <h2>
+    <svg class="cheers-mug mug-left" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M16 24V52C16 56.4 19.6 60 24 60H40C44.4 60 48 56.4 48 52V24H16Z" fill="#FFB300" stroke="#2B1800" stroke-width="4"/>
+      <path d="M48 28H54C57.3 28 60 30.7 60 34V44C60 47.3 57.3 50 54 50H48" stroke="#2B1800" stroke-width="4" stroke-linecap="round"/>
+      <path d="M12 20C12 24.4 20 24.4 24 20C28 24.4 36 24.4 40 20C44 24.4 52 24.4 52 20C52 13.4 44.8 10 32 10C19.2 10 12 13.4 12 20Z" fill="#FFFFFF" stroke="#2B1800" stroke-width="4"/>
+    </svg>
+    
+    <span>Einlasskontrolle</span>
+    
+    <svg class="cheers-mug mug-right" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M48 24V52C48 56.4 44.4 60 40 60H24C19.6 60 16 56.4 16 52V24H48Z" fill="#FFB300" stroke="#2B1800" stroke-width="4"/>
+      <path d="M16 28H10C6.7 28 4 30.7 4 34V44C4 47.3 6.7 50 10 50H16" stroke="#2B1800" stroke-width="4" stroke-linecap="round"/>
+      <path d="M12 20C12 24.4 20 24.4 24 20C28 24.4 36 24.4 40 20C44 24.4 52 24.4 52 20C52 13.4 44.8 10 32 10C19.2 10 12 13.4 12 20Z" fill="#FFFFFF" stroke="#2B1800" stroke-width="4"/>
+    </svg>
+  </h2>
+  
+  <p style="font-size: 20px; margin-bottom: 20px;">Wieviel Prozent Alkoholgehalt hat deiner Einschätzung nach das stärkste Bier der Welt?</p>
   
   <div class="guess-input-container">
     <input type="number" id="percentageGuess" min="0" max="100" step="0.1" placeholder="00">
@@ -436,7 +496,8 @@
 </div>
 
 <div id="start-screen">
-  <h1>🍺 Gartenparty Quiz 2026</h1>
+  <div class="party-headline">Gartenparty Quiz 2026</div>
+  
   <div class="welcome-text">
     <h3>Willkommen zum Gartenparty-Quiz 🍺</h3>
     <p>
@@ -499,20 +560,16 @@ let team = "";
 let timer;
 let timeLeft = 10;
 
-/* ==========================================================================
-   NEU: Schätzung absenden & zur Startseite wechseln
-   ========================================================================== */
+/* Schätzung absenden & zur Startseite wechseln */
 window.submitGuessAndContinue = async function() {
   const inputField = document.getElementById("percentageGuess");
   const val = parseFloat(inputField.value);
 
-  // Validierung: Das Feld darf nicht leer sein und muss zwischen 0 und 100 liegen
   if (isNaN(val) || val < 0 || val > 100) {
     alert("Bitte gib eine gültige Prozentzahl zwischen 0 und 100 ein! 😉");
     return;
   }
 
-  // Schätzung einzeln in Supabase in der neuen Tabelle "guesses" speichern
   const { error } = await supabaseClient
     .from("guesses")
     .insert([{ percentage: val }]);
@@ -523,14 +580,11 @@ window.submitGuessAndContinue = async function() {
     return;
   }
 
-  // Wenn erfolgreich: Schätz-Bildschirm ausblenden, Teamauswahl einblenden
   document.getElementById("gatekeeper-screen").style.display = "none";
   document.getElementById("start-screen").style.display = "block";
 };
 
-/* =========================
-   START GAME ÜBER TEAM-KLICK
-========================= */
+/* START GAME ÜBER TEAM-KLICK */
 window.selectTeamAndStart = async function (selectedTeam) {
   team = selectedTeam;
 
@@ -545,9 +599,7 @@ window.selectTeamAndStart = async function (selectedTeam) {
   showIntro();
 };
 
-/* =========================
-   SHOW INTRO (5s COUNTDOWN)
-========================= */
+/* SHOW INTRO (5s COUNTDOWN) */
 function showIntro() {
   document.getElementById("intro").style.display = "flex";
   const round = rounds[roundIndex];
@@ -572,9 +624,7 @@ function showIntro() {
   }, 1000);
 }
 
-/* =========================
-   START ROUND
-========================= */
+/* START ROUND */
 function startRound() {
   document.getElementById("intro").style.display = "none";
   document.getElementById("break").style.display = "none";
@@ -586,9 +636,7 @@ function startRound() {
   loadQuestion();
 }
 
-/* =========================
-   QUESTION
-========================= */
+/* QUESTION */
 function loadQuestion() {
   if (questionIndex >= currentQuestions.length) {
     endRound();
@@ -604,9 +652,7 @@ function loadQuestion() {
   startTimer();
 }
 
-/* =========================
-   ANSWERS
-========================= */
+/* ANSWERS */
 function renderAnswers(roundId) {
   let options = [];
   switch(roundId) {
@@ -624,9 +670,7 @@ function renderAnswers(roundId) {
   document.getElementById("answers").innerHTML = html;
 }
 
-/* =========================
-   TIMER
-========================= */
+/* TIMER */
 function startTimer() {
   clearInterval(timer);
   timeLeft = 10;
@@ -650,9 +694,7 @@ function startTimer() {
   }, 1000);
 }
 
-/* =========================
-   ANSWER
-========================= */
+/* ANSWER */
 window.answer = function (val) {
   clearInterval(timer);
   const q = currentQuestions[questionIndex];
@@ -665,9 +707,7 @@ function nextQuestion() {
   loadQuestion();
 }
 
-/* =========================
-   ROUND END
-========================= */
+/* ROUND END */
 function endRound() {
   document.getElementById("quiz").style.display = "none";
   document.getElementById("break").style.display = "block";
@@ -686,18 +726,14 @@ function endRound() {
   document.getElementById("breakText").innerText = "Runde beendet! Score: " + score;
 }
 
-/* =========================
-   NEXT ROUND
-========================= */
+/* NEXT ROUND */
 function nextRound() {
   roundIndex++;
   if (roundIndex >= rounds.length) { finishGame(); return; }
   showIntro();
 }
 
-/* =========================
-   FINISH
-========================= */
+/* FINISH */
 async function finishGame() {
   document.getElementById("break").style.display = "none";
   document.getElementById("end").style.display = "block";
