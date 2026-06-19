@@ -27,8 +27,64 @@
       font-size: 18px;
     }
 
-    #quiz, #break, #end, #intro {
+    #start-screen, #quiz, #break, #end, #intro {
       display: none;
+    }
+
+    /* NEU: Einlass-Bildschirm (Türsteher-Frage) */
+    #gatekeeper-screen {
+      display: block; /* Wird als einziges zuerst angezeigt */
+      max-width: 600px;
+      margin: 100px auto 30px auto;
+      background: rgba(255, 255, 255, 0.92);
+      padding: 35px;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+      border: 3px solid #ffcc00;
+    }
+
+    #gatekeeper-screen h2 {
+      font-size: 28px;
+      margin-bottom: 25px;
+      line-height: 1.4;
+    }
+
+    .guess-input-container {
+      margin: 25px 0;
+    }
+
+    .guess-input-container input {
+      font-size: 24px;
+      padding: 10px;
+      width: 100px;
+      text-align: center;
+      border: 2px solid #2b1800;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
+    .guess-input-container span {
+      font-size: 24px;
+      font-weight: bold;
+      margin-left: 8px;
+    }
+
+    .gatekeeper-btn {
+      background-color: #2b1800;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      padding: 15px 30px !important;
+      font-size: 20px !important;
+      transition: all 0.2s ease;
+    }
+
+    .gatekeeper-btn:hover {
+      background-color: #ffcc00;
+      color: #2b1800;
+      transform: scale(1.05);
     }
 
     /* Das animierte Timer-Bierglas im Spiel */
@@ -342,6 +398,8 @@
     @media (max-width: 768px) {
       body { padding: 15px 10px; }
       h1 { font-size: 26px; }
+      #gatekeeper-screen { margin: 40px auto 15px auto; padding: 20px; }
+      #gatekeeper-screen h2 { font-size: 22px; }
       .welcome-text { margin: 60px auto 20px auto; padding: 15px; font-size: 15px; }
       .team-selection-container { padding: 15px; margin: 20px 5px; }
       .team-btn { font-size: 18px !important; padding: 12px 15px !important; margin: 8px auto !important; }
@@ -365,6 +423,17 @@
 </head>
 
 <body>
+
+<div id="gatekeeper-screen">
+  <h2>🍺 Einlasskontrolle 🍺<br><br><span style="font-weight:normal; font-size: 20px;">Wieviel Prozent Alkoholgehalt hat deiner Einschätzung nach das stärkste Bier der Welt?</span></h2>
+  
+  <div class="guess-input-container">
+    <input type="number" id="percentageGuess" min="0" max="100" step="0.1" placeholder="00">
+    <span>%</span>
+  </div>
+  
+  <button class="gatekeeper-btn" onclick="submitGuessAndContinue()">Schätzung abgeben & eintreten</button>
+</div>
 
 <div id="start-screen">
   <h1>🍺 Gartenparty Quiz 2026</h1>
@@ -429,6 +498,35 @@ let score = 0;
 let team = "";
 let timer;
 let timeLeft = 10;
+
+/* ==========================================================================
+   NEU: Schätzung absenden & zur Startseite wechseln
+   ========================================================================== */
+window.submitGuessAndContinue = async function() {
+  const inputField = document.getElementById("percentageGuess");
+  const val = parseFloat(inputField.value);
+
+  // Validierung: Das Feld darf nicht leer sein und muss zwischen 0 und 100 liegen
+  if (isNaN(val) || val < 0 || val > 100) {
+    alert("Bitte gib eine gültige Prozentzahl zwischen 0 und 100 ein! 😉");
+    return;
+  }
+
+  // Schätzung einzeln in Supabase in der neuen Tabelle "guesses" speichern
+  const { error } = await supabaseClient
+    .from("guesses")
+    .insert([{ percentage: val }]);
+
+  if (error) {
+    console.error("Fehler beim Speichern der Schätzung:", error);
+    alert("Fehler beim Absenden der Schätzung. Versuche es nochmal.");
+    return;
+  }
+
+  // Wenn erfolgreich: Schätz-Bildschirm ausblenden, Teamauswahl einblenden
+  document.getElementById("gatekeeper-screen").style.display = "none";
+  document.getElementById("start-screen").style.display = "block";
+};
 
 /* =========================
    START GAME ÜBER TEAM-KLICK
@@ -621,5 +719,3 @@ async function finishGame() {
 </script>
 </body>
 </html>
-
-
