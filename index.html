@@ -114,30 +114,22 @@
       transform: scale(1.05);
     }
 
-    /* HIER GEÄNDERT: Überschrift höher gesetzt mit neonblauem Hintergrund-Glow */
+    /* Überschrift */
     .party-headline {
-      display: inline-block; /* Sorgt dafür, dass der Hintergrund nur so breit wie der Text ist */
+      display: inline-block; 
       font-size: 46px;
       font-weight: 900;
       text-transform: uppercase;
-      margin: 40px auto 25px auto; /* Deutlich weiter nach oben geschoben (von 140px auf 40px) */
+      margin: 40px auto 25px auto; 
       padding: 10px 25px;
       letter-spacing: 2px;
       border-radius: 12px;
-      
-      /* Leicht transparenter neonblauer Hintergrund */
       background-color: rgba(0, 212, 255, 0.25);
-      
-      /* Elektrisierender Neon-Leuchteffekt nach außen */
       box-shadow: 0 0 20px rgba(0, 212, 255, 0.6), inset 0 0 10px rgba(0, 212, 255, 0.4);
       border: 2px solid rgba(0, 212, 255, 0.5);
-
-      /* Gold-Bier-Farbverlauf für die Buchstaben */
       background-image: linear-gradient(to bottom, #ffe066 0%, #ff9900 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      
-      /* 3D-Konturschatten für die Schrift */
       filter: drop-shadow(2px 2px 0px #2b1800);
     }
 
@@ -234,6 +226,84 @@
       color: #ffffff;
       background-color: #2b1800;
       transform: scale(1.03);
+    }
+
+    /* Optische Karte für den Zwischenstand im Runden-Break */
+    .break-card {
+      max-width: 500px;
+      margin: 40px auto;
+      background: rgba(255, 255, 255, 0.92);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      border: 2px solid #2b1800;
+    }
+
+    .break-points-line {
+      font-size: 22px;
+      margin: 15px 0;
+      font-weight: bold;
+    }
+    
+    /* HIER GEÄNDERT: Schriftfarbe für die Zwischenstand-Punkte auf neutrales Schwarz gesetzt */
+    .break-points-line span {
+      color: #2b1800;
+      font-size: 26px;
+      font-weight: 900;
+    }
+
+    /* Styling für die finale Auswertungstabelle am Spielende */
+    .review-container {
+      max-width: 650px;
+      margin: 30px auto;
+      background: rgba(255, 255, 255, 0.96);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      border: 2px solid #2b1800;
+      text-align: left;
+    }
+
+    .review-container h3 {
+      text-align: center;
+      margin-top: 0;
+      text-transform: uppercase;
+      color: #2b1800;
+      border-bottom: 2px solid #ffcc00;
+      padding-bottom: 10px;
+    }
+
+    .review-row {
+      display: flex;
+      align-items: center;
+      padding: 12px 5px;
+      border-bottom: 1px solid rgba(43, 24, 0, 0.1);
+      font-size: 16px;
+    }
+
+    .review-row:last-child {
+      border-bottom: none;
+    }
+
+    .review-status {
+      font-size: 22px;
+      margin-right: 15px;
+      flex-shrink: 0;
+    }
+
+    .review-text {
+      flex-grow: 1;
+      line-height: 1.4;
+    }
+
+    .review-text strong {
+      color: #1a0f00;
+    }
+
+    .review-your-answer {
+      font-size: 14px;
+      color: #555;
+      margin-top: 3px;
     }
 
     /* FULLSCREEN INTRO */
@@ -384,7 +454,7 @@
     /* Sieger-Karte für das Spielende */
     .podium-card {
       max-width: 600px;
-      margin: 80px auto;
+      margin: 40px auto 10px auto;
       background: rgba(255, 255, 255, 0.95);
       padding: 40px;
       border-radius: 20px;
@@ -451,9 +521,15 @@
     /* MOBILE OPTIMIERUNG */
     @media (max-width: 768px) {
       body { padding: 15px 10px; }
-      .party-headline { font-size: 24px; margin: 20px auto 10px auto; padding: 8px 15px; } /* Mobil kompakt gehalten */
+      .party-headline { font-size: 24px; margin: 20px auto 10px auto; padding: 8px 15px; } 
       #gatekeeper-screen { margin: 40px auto 15px auto; padding: 20px; }
       #gatekeeper-screen h2 { font-size: 22px; }
+      .break-card { padding: 20px; margin: 20px auto; width: 90%; }
+      .break-points-line { font-size: 18px; }
+      .break-points-line span { font-size: 22px; }
+      .review-container { width: 95%; padding: 15px 10px; font-size: 14px; }
+      .review-row { padding: 10px 0; }
+      .review-status { font-size: 18px; margin-right: 10px; }
       .welcome-text { margin: 15px auto 20px auto; padding: 15px; font-size: 15px; }
       .team-selection-container { padding: 15px; margin: 20px 5px; }
       .team-btn { font-size: 18px !important; padding: 12px 15px !important; margin: 8px auto !important; }
@@ -467,7 +543,7 @@
       #timer { font-size: 36px; }
       #answers { margin-top: 30px; }
       #answers button { display: block; width: 100%; max-width: 280px; margin: 10px auto; padding: 12px 20px; font-size: 18px; }
-      .podium-card { padding: 20px; margin: 30px auto; }
+      .podium-card { padding: 20px; margin: 20px auto; }
       .podium-card h2 { font-size: 28px; }
       .podium-card .team-name-final { font-size: 24px; }
       .score-circle { width: 120px; height: 120px; }
@@ -478,6 +554,7 @@
 
 <body>
 
+<!-- ENTRANCE SCREEN (Türsteher-Frage mit animierten Krügen) -->
 <div id="gatekeeper-screen">
   <h2>
     <svg class="cheers-mug mug-left" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -485,29 +562,24 @@
       <path d="M48 28H54C57.3 28 60 30.7 60 34V44C60 47.3 57.3 50 54 50H48" stroke="#2B1800" stroke-width="4" stroke-linecap="round"/>
       <path d="M12 20C12 24.4 20 24.4 24 20C28 24.4 36 24.4 40 20C44 24.4 52 24.4 52 20C52 13.4 44.8 10 32 10C19.2 10 12 13.4 12 20Z" fill="#FFFFFF" stroke="#2B1800" stroke-width="4"/>
     </svg>
-    
     <span>Einlasskontrolle</span>
-    
     <svg class="cheers-mug mug-right" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M48 24V52C48 56.4 44.4 60 40 60H24C19.6 60 16 56.4 16 52V24H48Z" fill="#FFB300" stroke="#2B1800" stroke-width="4"/>
       <path d="M16 28H10C6.7 28 4 30.7 4 34V44C4 47.3 6.7 50 10 50H16" stroke="#2B1800" stroke-width="4" stroke-linecap="round"/>
       <path d="M12 20C12 24.4 20 24.4 24 20C28 24.4 36 24.4 40 20C44 24.4 52 24.4 52 20C52 13.4 44.8 10 32 10C19.2 10 12 13.4 12 20Z" fill="#FFFFFF" stroke="#2B1800" stroke-width="4"/>
     </svg>
   </h2>
-  
   <p style="font-size: 20px; margin-bottom: 20px;">Wieviel Prozent Alkoholgehalt hat deiner Einschätzung nach das stärkste Bier der Welt?</p>
-  
   <div class="guess-input-container">
     <input type="number" id="percentageGuess" min="0" max="100" step="0.1" placeholder="00">
     <span>%</span>
   </div>
-  
   <button class="gatekeeper-btn" onclick="submitGuessAndContinue()">Schätzung abgeben & eintreten</button>
 </div>
 
+<!-- START-SCREEN -->
 <div id="start-screen">
   <div class="party-headline">Gartenparty Quiz 2026</div>
-  
   <div class="welcome-text">
     <h3>Willkommen zum Gartenparty-Quiz 🍺</h3>
     <p>
@@ -527,11 +599,13 @@
   </div>
 </div>
 
+<!-- INTRO -->
 <div id="intro">
   <div id="introTitle"></div>
   <div id="countdown"></div>
 </div>
 
+<!-- QUIZ -->
 <div id="quiz">
   <div><span id="roundTitle" class="category-badge"></span></div>
   <div class="question-card"><h2 id="question"></h2></div>
@@ -540,11 +614,18 @@
   <h3 id="score"></h3>
 </div>
 
+<!-- BREAK -->
 <div id="break">
-  <h2 id="breakText"></h2>
-  <div style="margin-top: 50px;"><button id="nextBtn" onclick="nextRound()">➡ Weiter</button></div>
+  <div class="break-card">
+    <h2 style="margin-top:0; color:#2b1800; text-transform:uppercase; letter-spacing:1px;">Rubrik beendet!</h2>
+    <hr style="border:1px solid #2b1800; opacity:0.2; margin:20px 0;">
+    <div class="break-points-line">Punkte in dieser Rubrik: <span id="roundScoreText">0</span> / 10</div>
+    <div class="break-points-line" style="opacity:0.7; font-size:18px;">Gesamter Kontostand: <span id="totalScoreText" style="color:#2b1800; font-size:22px;">0</span> Punkte</div>
+  </div>
+  <div style="margin-top: 30px;"><button id="nextBtn" onclick="nextRound()">➡ Weiter</button></div>
 </div>
 
+<!-- END -->
 <div id="end"></div>
 
 <script>
@@ -565,10 +646,12 @@ let allQuestions = [];
 let currentQuestions = [];
 let roundIndex = 0;
 let questionIndex = 0;
-let score = 0;
+let score = 0;        
+let roundScore = 0;   
 let team = "";
 let timer;
 let timeLeft = 10;
+let gameHistory = [];
 
 /* Schätzung absenden & zur Startseite wechseln */
 window.submitGuessAndContinue = async function() {
@@ -604,6 +687,7 @@ window.selectTeamAndStart = async function (selectedTeam) {
   allQuestions = data;
   roundIndex = 0;
   score = 0;
+  gameHistory = []; 
 
   document.getElementById("start-screen").style.display = "none";
   showIntro();
@@ -643,6 +727,8 @@ function startRound() {
   const round = rounds[roundIndex];
   currentQuestions = allQuestions.filter(q => q.round_id === round.id);
   questionIndex = 0;
+  roundScore = 0; 
+
   loadQuestion();
 }
 
@@ -699,6 +785,12 @@ function startTimer() {
 
     if (timeLeft <= 0) {
       clearInterval(timer); 
+      const q = currentQuestions[questionIndex];
+      gameHistory.push({
+        question: q.question,
+        wasCorrect: false,
+        userAnswer: "Zeit abgelaufen ⏱"
+      });
       nextQuestion();
     }
   }, 1000);
@@ -708,7 +800,19 @@ function startTimer() {
 window.answer = function (val) {
   clearInterval(timer);
   const q = currentQuestions[questionIndex];
-  if (val === q.correct_answer) { score++; }
+  let isCorrect = (val === q.correct_answer);
+  
+  if (isCorrect) { 
+    score++; 
+    roundScore++; 
+  }
+
+  gameHistory.push({
+    question: q.question,
+    wasCorrect: isCorrect,
+    userAnswer: val
+  });
+
   nextQuestion();
 };
 
@@ -729,11 +833,13 @@ function endRound() {
     btn.className = ""; 
     btn.innerText = "➡ Weiter zur Rubrik " + next.part1 + " oder " + next.part2;
   } else {
+    // HIER GEÄNDERT: Button-Text angepasst, damit die Teilnehmer wissen, dass danach das Protokoll folgt
     btn.className = "beer-mug-button";
-    btn.innerHTML = "Spiel beenden &<br>Punkte speichern<br><small style='font-size:12px; opacity:0.8; font-weight:normal;'>Jetzt hast du dir ein Bier verdient!</small>";
+    btn.innerHTML = "Spiel beenden &<br>Punkte speichern<br><small style='font-size:12px; opacity:0.8; font-weight:normal;'>Und richtige Antworten einsehen!</small>";
   }
 
-  document.getElementById("breakText").innerText = "Runde beendet! Score: " + score;
+  document.getElementById("roundScoreText").innerText = roundScore;
+  document.getElementById("totalScoreText").innerText = score;
 }
 
 /* NEXT ROUND */
@@ -748,6 +854,21 @@ async function finishGame() {
   document.getElementById("break").style.display = "none";
   document.getElementById("end").style.display = "block";
 
+  // HIER GEÄNDERT: "Eure Antwort" durch "Deine Antwort" ersetzt
+  let historyHtml = "";
+  gameHistory.forEach((item, index) => {
+    let icon = item.wasCorrect ? "✅" : "❌";
+    historyHtml += `
+      <div class="review-row">
+        <div class="review-status">${icon}</div>
+        <div class="review-text">
+          <strong>Frage ${index + 1}:</strong> ${item.question}
+          <div class="review-your-answer">Deine Antwort: "${item.userAnswer}"</div>
+        </div>
+      </div>
+    `;
+  });
+
   document.getElementById("end").innerHTML = `
     <div class="podium-card">
       <h2>🏆 ENDERGEBNIS 🏆</h2>
@@ -757,6 +878,13 @@ async function finishGame() {
         <span class="points-label">Punkte</span>
       </div>
       <div class="party-emoji-line">🍻🎉🥳🔥🍻</div>
+    </div>
+
+    <div class="review-container">
+      <h3>📋 Spiel-Protokoll</h3>
+      <div style="max-height: 400px; overflow-y: auto; padding-right: 5px;">
+        ${historyHtml}
+      </div>
     </div>
   `;
 
